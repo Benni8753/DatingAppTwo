@@ -25,14 +25,14 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             // calls the UserExists function to check if the name is taken.
-            if(await UserExists(registerDto.UserName)) return BadRequest("Usename is taken. This message has been created by AccountController");
+            if(await UserExists(registerDto.Username)) return BadRequest("Usename is taken. This message has been created by AccountController");
 
             // hmac helps to encrypt the password. It will set hash the password the user is given.
             using var hmac = new HMACSHA512();
 
             var user = new AppUser
             {
-                UserName = registerDto.UserName,
+                UserName = registerDto.Username,
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PasswordSalt = hmac.Key
             };
@@ -42,7 +42,7 @@ namespace API.Controllers
 
             return new UserDto
             {
-                UserName = user.UserName,
+                Username = user.UserName,
                 Token = _tokenService.CreateToken(user)
             };
         }
@@ -56,7 +56,7 @@ namespace API.Controllers
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
             var user = await _context.AllMyUsers
-                .SingleOrDefaultAsync(AUserFromDb => AUserFromDb.UserName == loginDto.UserName);
+                .SingleOrDefaultAsync(AUserFromDb => AUserFromDb.UserName == loginDto.Username);
 
             if(user == null) return Unauthorized("Invalid username");
 
@@ -71,7 +71,7 @@ namespace API.Controllers
             
             return new UserDto
             {
-                UserName = user.UserName,
+                Username = user.UserName,
                 Token = _tokenService.CreateToken(user)
             };
         }
