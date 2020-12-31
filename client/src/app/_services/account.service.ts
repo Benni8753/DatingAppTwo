@@ -1,3 +1,4 @@
+import { environment } from './../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
@@ -8,7 +9,7 @@ import { User } from '../_models/user';
   providedIn: 'root'
 })
 export class AccountService {
-  baseUrl = 'https://localhost:5001/api/';
+  baseUrl = environment.apiUrl;
   // Replaysubject takes in the last object of an array or list. (1) indicates that it only stores the last object.
   private currentUserSource = new ReplaySubject<User>(1);
   // currentUser$ stores the object as an Observable
